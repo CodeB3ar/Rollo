@@ -1,63 +1,28 @@
 class_name SurfaceSensor
 extends Node3D
-
-
-
-
-
-
-
-
-
-
-
-
-
 const PROBE_PAD := 0.9
-
-
-
-
-
 const RATES := {
 	Surfaces.Surf.NEUTRAL: 0.0,
 	Surfaces.Surf.DEEP_SNOW: 0.90,
 	Surfaces.Surf.FIRE: -1.00,
 	Surfaces.Surf.WATER: -0.90,
 }
-
-
-
-
 const IDLE_GROW := 0.30
-
 var surface: int = Surfaces.Surf.NEUTRAL
-
 var ground_y := 0.0
 var has_ground := false
-
 var _exclude: Array[RID] = []
 var _snow: Array = []
 var _fire: Array = []
 var _zones_ready := false
-
-
 func _ready() -> void:
 	var body := get_parent() as CollisionObject3D
 	if body != null:
 		_exclude = [body.get_rid()]
-
-
-
-
 func refresh_zones() -> void:
 	_snow = get_tree().get_nodes_in_group("snow_patch")
 	_fire = get_tree().get_nodes_in_group("campfire")
 	_zones_ready = true
-
-
-
-
 func probe(radius: float) -> int:
 	if not _zones_ready:
 		refresh_zones()
@@ -75,20 +40,11 @@ func probe(radius: float) -> int:
 		surface = int(collider.get_meta("surface", Surfaces.Surf.NEUTRAL)) if collider != null else Surfaces.Surf.NEUTRAL
 	else:
 		surface = Surfaces.Surf.NEUTRAL
-
-	# Zones win over the collider: they are the only things that grow or melt,
-	# and fire wins over snow where the two overlap.
 	if _inside(_snow):
 		surface = Surfaces.Surf.DEEP_SNOW
 	if _inside(_fire):
 		surface = Surfaces.Surf.FIRE
 	return surface
-
-
-
-
-
-
 func _inside(zones: Array) -> bool:
 	for node in zones:
 		var zone := node as Node3D
@@ -106,15 +62,10 @@ func _inside(zones: Array) -> bool:
 		if along * along + across * across < radius * radius:
 			return true
 	return false
-
-
-
 func rate(moving: bool) -> float:
 	var value := float(RATES.get(surface, 0.0))
 	if value > 0.0 and not moving:
 		return IDLE_GROW
 	return value
-
-
 static func label(value: int) -> String:
 	return Surfaces.label(value)

@@ -1,16 +1,6 @@
 class_name Surfaces
 extends RefCounted
-
-
-
-
-
-
-
-
 enum Surf { NEUTRAL, DEEP_SNOW, FIRE, WATER }
-
-
 static func label(value: int) -> String:
 	match value:
 		Surf.DEEP_SNOW:

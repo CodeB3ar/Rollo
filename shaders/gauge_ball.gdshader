@@ -1,15 +1,12 @@
 shader_type canvas_item;
-
 // Circular badge for the size gauge. The replica renders in its own SubViewport
 // with a transparent background; this composites it over a dark coin so the ball
 // reads on bright snow and the square viewport edge never shows.
-
 uniform vec4 backing : source_color = vec4(0.10, 0.15, 0.23, 0.82);
 uniform vec4 rim_color : source_color = vec4(0.04, 0.06, 0.10, 1.0);
 // Fraction of the half-viewport occupied by the coin. The SubViewport is
 // BADGE + 2 * PAD square so the pulse has room; the ring lives in that padding.
 uniform float coin_radius : hint_range(0.5, 1.0) = 0.8667;
-
 void fragment() {
 	vec2 p = UV * 2.0 - 1.0;
 	float d = length(p);
